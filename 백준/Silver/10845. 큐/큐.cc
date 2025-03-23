@@ -1,18 +1,28 @@
 #include<iostream>
 using namespace std;
 
+class node {
+private:
+	int elem;
+	node* next;
+public:
+	node() {
+		elem = 0;
+		next = nullptr;
+	}
+	friend class queue;
+};
+
 class queue {
 private:
-	int frontindex;
-	int backindex;
+	node* frontnode;
+	node* rearnode;
 	int qsize;
-	int* arr;
 public:
 	queue() {
-		frontindex = 0;
-		backindex = -1;
-	    qsize = 0 ;
-		arr = new int[10000];
+		frontnode = nullptr;
+		rearnode = nullptr;
+		qsize = 0;
 	}
 	int size() {
 		return  qsize;
@@ -21,8 +31,15 @@ public:
 		return qsize == 0;
 	}
 	void push(int x) {
-		backindex++;
-		arr[backindex] = x;
+		node* v = new node;
+		v->elem = x;
+		if (empty()) {
+			frontnode = rearnode = v;
+		}
+		else {
+			rearnode->next = v; //처음엔 v=rearnode->next로 했음
+			rearnode = v;
+		}
 		qsize++;
 	}
 	void pop() {
@@ -30,8 +47,10 @@ public:
 			cout << "-1\n";
 		}
 		else {
-			cout << arr[frontindex] << "\n";
-			frontindex++;
+			node* delnode = frontnode;
+			frontnode = frontnode->next;
+			cout << delnode->elem << "\n";
+			delete delnode;
 			qsize--;
 		}
 	}
@@ -40,7 +59,7 @@ public:
 			cout << "-1\n";
 		}
 		else {
-			cout << arr[frontindex] << "\n";
+			cout << frontnode->elem << "\n";
 		}
 	}
 	void back() {
@@ -48,7 +67,7 @@ public:
 			cout << "-1\n";
 		}
 		else {
-			cout << arr[backindex] << "\n";
+			cout << rearnode->elem << "\n";
 		}
 	}
 };
